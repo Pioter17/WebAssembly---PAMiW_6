@@ -1,0 +1,71 @@
+@page "/directors"
+
+@* @using blazorapp.Shared.Services.MovieService; *@
+
+@inject DirectorService DirectorService
+@inject NavigationManager NavigationManager
+
+<PageTitle>Directors</PageTitle>
+
+<h3>Full list of directors</h3>
+@if (directors == null)
+{
+    <p><em>@message</em></p>
+}
+
+else
+{
+    @if (directors.Count == 0)
+    {
+        <p><em>"Wystąpił błąd"</em></p>
+    }  
+    @foreach (var director in directors)
+    {
+        <div class="card mb-4">
+            <div class="card-body">
+                <h5 class="card-title">Name: @director.name</h5>
+                <p class="card-text">Nationality: @director.nationality</p>
+                <p class="card-text">Age: @director.age</p>
+                <p class="card-text">Id: @director.id</p>
+            </div>
+        </div>
+    }
+
+    <button class="btn btn-primary" disabled="@(currentPage==1)" @onclick="PreviousPage">Previous</button>
+    <span>@currentPage</span>
+    <button class="btn btn-primary" @onclick="NextPage">Next</button>
+}
+
+
+
+@code {
+    private List<Shared.Models.Director> directors;
+    private string message = "Loading movies...";
+
+    private int currentPage = 1;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await  LoadMovies();
+    }
+
+    private async Task LoadMovies()
+    {
+        var response = await DirectorService.GetDirectorsAsync(currentPage);//, currentPage, pageSize);
+        directors = response;
+    }
+
+    private async Task PreviousPage()
+    {
+        if (currentPage > 1)
+        {
+            currentPage--;
+            await LoadMovies();
+        }
+    }
+    private async Task NextPage()
+    {
+        currentPage++;
+        await LoadMovies();
+    }
+}

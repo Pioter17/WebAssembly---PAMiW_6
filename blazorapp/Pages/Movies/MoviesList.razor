@@ -1,18 +1,11 @@
 @page "/movies"
 
-@* @using blazorapp.Shared.Services.MovieService; *@
-
 @inject MovieService MovieService
 @inject NavigationManager NavigationManager
 
 <PageTitle>Movies</PageTitle>
 
 <h3>Full list of movies</h3>
-
-
-<p>
-    <a href="movies/createmovie">Create new movie</a>
-</p>
 
 @if (movies == null)
 {
@@ -28,37 +21,21 @@ else
     <div>
         <InputText @bind-Value=searchTerm></InputText>
         <button class="btn btn-primary" @onclick=Search>Search</button>
+        <button class="btn btn-primary" @onclick="()=> GoToCreate()">Create</button>
     </div>
-    
-
-
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Name</th>
-                <th>Director</th>
-                <th>Producer</th>
-                <th>Rating</th>
-                <th>Length</th>
-                <th>Options</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var movie in movies)
-            {
-                <tr>
-                    <td>@movie.name</td>
-                    <td>@movie.director.name</td>
-                    <td>@movie.producer</td>
-                    <td>@movie.rating</td>
-                    <td>@movie.length</td>
-                    <td>
-                        <button class="btn btn-primary" @onclick="()=> GoToEdit(movie.name)">Edit</button>
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
+    @foreach (var movie in movies)
+    {
+        <div class="card mb-4">
+            <div class="card-body">
+                <h5 class="card-title">Name: @movie.name</h5>
+                <p class="card-text">Director: @movie.director.name</p>
+                <p class="card-text">Producer: @movie.producer</p>
+                <p class="card-text">Rating: @movie.rating</p>
+                <p class="card-text">Length: @movie.length</p>
+                <button class="btn btn-primary" @onclick="()=> GoToEdit(movie.name)">Edit</button>
+            </div>
+        </div>
+    }
 
     <button class="btn btn-primary" disabled="@(currentPage==1)" @onclick="PreviousPage">Previous</button>
     <span>@currentPage</span>
@@ -72,7 +49,6 @@ else
     private string message = "Loading movies...";
 
     private int currentPage = 1;
-    private const int pageSize = 10;
 
     private string searchTerm = "";
 
@@ -83,13 +59,17 @@ else
 
     private async Task LoadMovies()
     {
-        var response = await MovieService.GetMoviesAsync();//, currentPage, pageSize);
+        var response = await MovieService.GetMoviesAsync(currentPage);//, currentPage, pageSize);
         movies = response;
     }
 
     void GoToEdit(string name)
     {
         NavigationManager.NavigateTo($"/movies/editmovie/{name}");
+    }
+
+    void GoToCreate(){
+        NavigationManager.NavigateTo($"/movies/createmovie");
     }
 
     private async Task PreviousPage()
@@ -109,7 +89,7 @@ else
     private async Task Search()
     {
         currentPage = 1;
-        var response = await MovieService.SearchMoviesAsync(searchTerm);//, currentPage, pageSize);
+        var response = await MovieService.SearchMoviesAsync(searchTerm, currentPage);//, currentPage, pageSize);
         movies = response;
     }
 }

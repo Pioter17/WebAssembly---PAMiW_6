@@ -5,6 +5,7 @@ using blazorapp.Shared.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using blazorapp.Shared.Services.MovieService;
+using blazorapp.Shared.Services.DirectorService;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
@@ -25,5 +26,7 @@ builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.
 // builder.Services.Configure<AppSettings>(appSettings);
 builder.Services.AddSingleton<IOptions<AppSettings>>(new OptionsWrapper<AppSettings>(appSettingsSection));
 builder.Services.AddScoped<MovieService>();
+builder.Services.AddScoped<DirectorService>();
+
 
 await builder.Build().RunAsync();

@@ -27,8 +27,7 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        var response = await MovieService.SearchMoviesAsync(name);
-        Console.WriteLine(response);
+        var response = await MovieService.SearchMoviesAsync(name, 1);
         movie = response[0];
 
         movieDTO = new MovieDTO
@@ -39,7 +38,6 @@ else
             rating = movie.rating,
             length = movie.length
         };
-        Console.WriteLine(movieDTO);
     }
 
     async Task HandleValidSubmit()

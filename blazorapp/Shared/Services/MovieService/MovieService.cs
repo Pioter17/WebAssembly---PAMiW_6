@@ -25,10 +25,10 @@ namespace blazorapp.Shared.Services.MovieService
             _appSettings = appSettings.Value;
         }
 
-        public async Task<ServiceResponse<Movie>> CreateMovieAsync(MovieDTO movie)
+        public async Task<Movie> CreateMovieAsync(MovieDTO movie)
         {
             var response = await _httpClient.PostAsJsonAsync(_appSettings.BaseAPIUrl + _appSettings.MovieEndpoint.GetAllMoviesEndpoint, movie);
-            var result = await response.Content.ReadFromJsonAsync<ServiceResponse<Movie>>();
+            var result = await response.Content.ReadFromJsonAsync<Movie>();
             return result;
         }
 
@@ -49,7 +49,7 @@ namespace blazorapp.Shared.Services.MovieService
             
         }
 
-        public async Task<List<Movie>> GetMoviesAsync()
+        public async Task<List<Movie>> GetMoviesAsync(int page)
         {
             try
             {
@@ -59,34 +59,16 @@ namespace blazorapp.Shared.Services.MovieService
                 }
                 var json = await response.Content.ReadAsStringAsync();
                 var result = await response.Content.ReadFromJsonAsync<List<Movie>>();
-                return result;
+                List<Movie> finalResult = new List<Movie>();
+                for (int i = 10*(page-1); i < page*10 && i < result.Count; i++)
+                {
+                    finalResult.Add(result[i]);
+                }
+                return finalResult;
             }
             catch (Exception)
             {
-                // return new ServiceResponse<List<Movie>>
-                // {
-                //     Success = false,
-                //     Message = "Network error"
-                // };
                 return [];
-            }
-        }
-
-        public async Task<Movie> GetMovieByIdAsync(int id)
-        {
-            try {
-                var response = await _httpClient.GetAsync(_appSettings.BaseAPIUrl + _appSettings.MovieEndpoint.GetAllMoviesEndpoint + id.ToString());
-                if (!response.IsSuccessStatusCode)
-                    return null;
-
-                var json = await response.Content.ReadAsStringAsync();
-                var result = await response.Content.ReadFromJsonAsync<Movie>();
-
-                return result;
-            }
-             catch (Exception)
-            {
-                return null;
             }
         }
 
@@ -97,7 +79,7 @@ namespace blazorapp.Shared.Services.MovieService
             return result;
         }
 
-        public async Task<List<Movie>> SearchMoviesAsync(string text)
+        public async Task<List<Movie>> SearchMoviesAsync(string text, int page)
         {
 
             try
@@ -110,7 +92,12 @@ namespace blazorapp.Shared.Services.MovieService
                 var json = await response.Content.ReadAsStringAsync();
                 var result = await response.Content.ReadFromJsonAsync<List<Movie>>();
 
-                return result;
+                List<Movie> finalResult = new List<Movie>();
+                for (int i = 10*(page-1); i < page*10 && i < result.Count; i++)
+                {
+                    finalResult.Add(result[i]);
+                }
+                return finalResult;
             }
             catch (Exception ex)
             {
