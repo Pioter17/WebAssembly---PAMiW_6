@@ -19,8 +19,8 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/movies")
-@CrossOrigin(origins = "http://localhost:4200")
+@RequestMapping("/api/movies")
+@CrossOrigin(origins = {"http://localhost:4200", "http://localhost:5178"})
 public class MovieController {
 
     private final MovieRepository movieRepository;
@@ -39,7 +39,7 @@ public class MovieController {
 
     // Endpoint do pobierania wszystkich filmów
     @GetMapping
-    @CrossOrigin(origins = "http://localhost:4200")
+    @CrossOrigin(origins = {"http://localhost:4200", "http://localhost:5178/movies"})
     public List<Movie> getAllMovies() {
         return movieRepository.findAll();
     }
@@ -64,7 +64,7 @@ public class MovieController {
 
     // Endpoint do dodawania nowego filmu
     @PostMapping
-    @CrossOrigin(origins = "http://localhost:4200")
+    @CrossOrigin(origins = {"http://localhost:4200", "http://localhost:5178/movies"})
     public ServiceResponse<Movie> addMovie(@RequestBody MovieDTO movieDTO) {
         Movie movie;
         try{
@@ -81,7 +81,7 @@ public class MovieController {
 
     // Endpoint do aktualizacji filmu po ID
     @PutMapping("/{id}")
-    @CrossOrigin(origins = "http://localhost:4200")
+    @CrossOrigin(origins = {"http://localhost:4200", "http://localhost:5178/movies"})
     public ServiceResponse<Movie> updateMovie(@PathVariable Long id, @RequestBody MovieDTO movieDTO) {
         Movie movie;
         try{
@@ -100,7 +100,7 @@ public class MovieController {
 
     // Endpoint do usuwania filmu po ID
     @DeleteMapping("/{id}")
-    @CrossOrigin(origins = "http://localhost:4200")
+    @CrossOrigin(origins = {"http://localhost:4200", "http://localhost:5178/movies"})
     public ResponseEntity<Void> deleteMovie(@PathVariable Long id) {
         Optional<Movie> optionalMovie = movieRepository.findById(id);
         if (optionalMovie.isPresent()) {

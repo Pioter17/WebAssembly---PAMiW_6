@@ -15,8 +15,8 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/directors")
-@CrossOrigin(origins = "http://localhost:4200")
+@RequestMapping("/api/directors")
+@CrossOrigin(origins = {"http://localhost:4200", "http://localhost:5178"})
 public class DirectorController {
     private final DirectorRepository directorRepository;
 
@@ -26,7 +26,7 @@ public class DirectorController {
     }
 
     @GetMapping
-    @CrossOrigin(origins = "http://localhost:4200")
+    @CrossOrigin(origins = {"http://localhost:4200", "http://localhost:5178/directors"})
     public List<Director> getAllDirectors() {
         return directorRepository.findAll();
     }
@@ -49,14 +49,14 @@ public class DirectorController {
     }
 
     @PostMapping
-    @CrossOrigin(origins = "http://localhost:4200")
+    @CrossOrigin(origins = {"http://localhost:4200", "http://localhost:5178/directors"})
     public ResponseEntity<Director> addDirector(@RequestBody Director director) {
         Director addedDirector = directorRepository.save(director);
         return ResponseEntity.status(HttpStatus.CREATED).body(addedDirector);
     }
 
     @PutMapping("/{id}")
-    @CrossOrigin(origins = "http://localhost:4200")
+    @CrossOrigin(origins = {"http://localhost:4200", "http://localhost:5178/directors"})
     public ResponseEntity<Director> updateDirector(@PathVariable Long id, @RequestBody Director updatedDirector) {
         Optional<Director> director = directorRepository.findById(id);
         if (director.isPresent()) {
@@ -73,7 +73,7 @@ public class DirectorController {
     }
 
     @DeleteMapping("/{id}")
-    @CrossOrigin(origins = "http://localhost:4200")
+    @CrossOrigin(origins = {"http://localhost:4200", "http://localhost:5178/directors"})
     public ServiceResponse<Void> deleteDirector(@PathVariable Long id) {
         Optional<Director> director = directorRepository.findById(id);
         if (director.isPresent()) {
