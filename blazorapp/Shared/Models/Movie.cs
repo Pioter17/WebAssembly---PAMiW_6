@@ -11,37 +11,37 @@ namespace blazorapp.Shared.Models
 {
     public class Movie
     {
-        public int Id { get; set; }
-        public string Name { get; set; }
-        public Director Director { get; set; }
-        public string Producer { get; set; }
-        public double Rating { get; set; }
-        public double Length { get; set; }
+        public int id { get; set; }
+        public string name { get; set; }
+        public Director director { get; set; }
+        public string producer { get; set; }
+        public double rating { get; set; }
+        public double length { get; set; }
     }
 
     public class MovieDTO
     {
-        public string Name { get; set; }
-        public int DirectorId { get; set; }
-        public string Producer { get; set; }
-        public double Rating { get; set; }
-        public double Length { get; set; }
+        public string name { get; set; }
+        public int director_id { get; set; }
+        public string producer { get; set; }
+        public double rating { get; set; }
+        public double length { get; set; }
     }
 
     public class MovieDialogData 
     {
-        public bool IsEdit { get; set; }
-        public string Name { get; set; }
-        public string Director { get; set; }
-        public string Producer { get; set; }
-        public double Rating { get; set; }
-        public double Length { get; set; }
+        public bool isEdit { get; set; }
+        public string name { get; set; }
+        public string director { get; set; }
+        public string producer { get; set; }
+        public double rating { get; set; }
+        public double length { get; set; }
     }
 
     public class MovieResponse
     {
-        public Movie Data { get; set; }
-        public bool IsSuccess { get; set; }
-        public string Message { get; set; }
+        public Movie data { get; set; }
+        public bool isSuccess { get; set; }
+        public string message { get; set; }
     }
 }

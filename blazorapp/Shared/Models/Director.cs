@@ -10,9 +10,9 @@ namespace blazorapp.Shared.Models
 {
     public class Director
     {
-        public int Id { get; set; }
-        public string Name { get; set; }
-        public string Nationality { get; set; }
-        public double Age { get; set; }
+        public int id { get; set; }
+        public string name { get; set; }
+        public string nationality { get; set; }
+        public double age { get; set; }
     }
 }

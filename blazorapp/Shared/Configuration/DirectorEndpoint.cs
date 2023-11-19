@@ -10,7 +10,7 @@ namespace blazorapp.Shared.Configuration
     {
         public string GetAllDirectorsEndpoint { get; set; }
 
-        public string SearchDirectorEndpoint { get; set; }
+        public string SearchDirectorsEndpoint { get; set; }
 
         
     }

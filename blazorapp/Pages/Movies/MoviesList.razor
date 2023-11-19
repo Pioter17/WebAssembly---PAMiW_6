@@ -1,6 +1,6 @@
 @page "/movies"
 
-@using blazorapp.Shared.Services.MovieService;
+@* @using blazorapp.Shared.Services.MovieService; *@
 
 @inject MovieService MovieService
 @inject NavigationManager NavigationManager
@@ -21,6 +21,10 @@
 
 else
 {
+    @if (movies.Count == 0)
+    {
+        <p><em>"Wystąpił błąd"</em></p>
+    }
     <div>
         <InputText @bind-Value=searchTerm></InputText>
         <button class="btn btn-primary" @onclick=Search>Search</button>
@@ -31,7 +35,6 @@ else
     <table class="table">
         <thead>
             <tr>
-                <th>Id</th>
                 <th>Name</th>
                 <th>Director</th>
                 <th>Producer</th>
@@ -44,14 +47,13 @@ else
             @foreach (var movie in movies)
             {
                 <tr>
-                    <td>@movie.Id</td>
-                    <td>@movie.Name</td>
-                    <td>@movie.Director</td>
-                    <td>@movie.Producer</td>
-                    <td>@movie.Rating</td>
-                    <td>@movie.Length</td>
+                    <td>@movie.name</td>
+                    <td>@movie.director.name</td>
+                    <td>@movie.producer</td>
+                    <td>@movie.rating</td>
+                    <td>@movie.length</td>
                     <td>
-                        <button class="btn btn-primary" @onclick="()=> GoToEdit(movie.Id)">Edit</button>
+                        <button class="btn btn-primary" @onclick="()=> GoToEdit(movie.name)">Edit</button>
                     </td>
                 </tr>
             }
@@ -67,7 +69,7 @@ else
 
 @code {
     private List<Shared.Models.Movie> movies;
-    private string message = "Loading products...";
+    private string message = "Loading movies...";
 
     private int currentPage = 1;
     private const int pageSize = 10;
@@ -81,24 +83,13 @@ else
 
     private async Task LoadMovies()
     {
-        var response = await MovieService.SearchMoviesAsync(searchTerm);//, currentPage, pageSize);
-        if (response.Success)
-        {
-            movies = response.Data;
-            //.Skip(pageSize * (currentPage - 1))
-            //.Take(pageSize)
-            //.ToList();
-        }
-        else
-        {
-            message = response.Message;
-        }
+        var response = await MovieService.GetMoviesAsync();//, currentPage, pageSize);
+        movies = response;
     }
 
-
-    void GoToEdit(int id)
+    void GoToEdit(string name)
     {
-        NavigationManager.NavigateTo($"/movies/editmovie/{id}");
+        NavigationManager.NavigateTo($"/movies/editmovie/{name}");
     }
 
     private async Task PreviousPage()
@@ -118,6 +109,7 @@ else
     private async Task Search()
     {
         currentPage = 1;
-        await LoadMovies();
+        var response = await MovieService.SearchMoviesAsync(searchTerm);//, currentPage, pageSize);
+        movies = response;
     }
 }

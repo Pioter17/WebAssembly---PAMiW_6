@@ -25,126 +25,96 @@ namespace blazorapp.Shared.Services.MovieService
             _appSettings = appSettings.Value;
         }
 
-        public async Task<ServiceResponse<Movie>> CreateMovieAsync(Movie movie)
+        public async Task<ServiceResponse<Movie>> CreateMovieAsync(MovieDTO movie)
         {
-            var response = await _httpClient.PostAsJsonAsync(_appSettings.MovieEndpoint.GetAllMoviesEndpoint, movie);
+            var response = await _httpClient.PostAsJsonAsync(_appSettings.BaseAPIUrl + _appSettings.MovieEndpoint.GetAllMoviesEndpoint, movie);
             var result = await response.Content.ReadFromJsonAsync<ServiceResponse<Movie>>();
             return result;
         }
 
-        public async Task<ServiceResponse<bool>> DeleteMovieAsync(int id)
+        public async Task<bool> DeleteMovieAsync(int id)
         {
             try {
-                var response = await _httpClient.DeleteAsync(_appSettings.BaseAPIUrl + _appSettings.MovieEndpoint.GetAllMoviesEndpoint + id);
+                var response = await _httpClient.DeleteAsync(_appSettings.BaseAPIUrl + _appSettings.MovieEndpoint.GetAllMoviesEndpoint + '/' + id);
                 if (!response.IsSuccessStatusCode)
-                    return new ServiceResponse<bool>
-                    {
-                        Success = false,
-                        Message = "HTTP request failed"
-                    };
+                    return false;
 
-                var result = await response.Content.ReadFromJsonAsync<ServiceResponse<bool>>();
+                var result = await response.Content.ReadFromJsonAsync<bool>();
                 return result;
             }
             catch (Exception)
             {
-                return new ServiceResponse<bool>
-                {
-                    Success = false,
-                    Message = "Network error"
-                };
+                return false;
             }
             
         }
 
-        public async Task<ServiceResponse<List<Movie>>> GetMoviesAsync()
+        public async Task<List<Movie>> GetMoviesAsync()
         {
             try
             {
                 var response = await _httpClient.GetAsync(_appSettings.BaseAPIUrl + _appSettings.MovieEndpoint.GetAllMoviesEndpoint);
-                if (!response.IsSuccessStatusCode)
-                    return new ServiceResponse<List<Movie>>
-                    {
-                        Success = false,
-                        Message = "HTTP request failed"
-                    };
-
+                if (!response.IsSuccessStatusCode){
+                    return [];
+                }
                 var json = await response.Content.ReadAsStringAsync();
-                var result = await response.Content.ReadFromJsonAsync<ServiceResponse<List<Movie>>>();
-
+                var result = await response.Content.ReadFromJsonAsync<List<Movie>>();
                 return result;
             }
             catch (Exception)
             {
-                return new ServiceResponse<List<Movie>>
-                {
-                    Success = false,
-                    Message = "Network error"
-                };
+                // return new ServiceResponse<List<Movie>>
+                // {
+                //     Success = false,
+                //     Message = "Network error"
+                // };
+                return [];
             }
         }
 
-        public async Task<ServiceResponse<Movie>> GetMovieByIdAsync(int id)
+        public async Task<Movie> GetMovieByIdAsync(int id)
         {
             try {
-                var response = await _httpClient.GetAsync(id.ToString());
+                var response = await _httpClient.GetAsync(_appSettings.BaseAPIUrl + _appSettings.MovieEndpoint.GetAllMoviesEndpoint + id.ToString());
                 if (!response.IsSuccessStatusCode)
-                    return new ServiceResponse<Movie>
-                    {
-                        Success = false,
-                        Message = "HTTP request failed"
-                    };
+                    return null;
 
                 var json = await response.Content.ReadAsStringAsync();
-                var result = await response.Content.ReadFromJsonAsync<ServiceResponse<Movie>>();
+                var result = await response.Content.ReadFromJsonAsync<Movie>();
 
                 return result;
             }
              catch (Exception)
             {
-                return new ServiceResponse<Movie>
-                {
-                    Success = false,
-                    Message = "Network error"
-                };
+                return null;
             }
         }
 
-        public async Task<ServiceResponse<Movie>> UpdateMovieAsync(Movie movie)
+        public async Task<Movie> UpdateMovieAsync(int id, MovieDTO movie)
         {
-            var response = await _httpClient.PutAsJsonAsync(_appSettings.MovieEndpoint.GetAllMoviesEndpoint, movie);
-            var result = await response.Content.ReadFromJsonAsync<ServiceResponse<Movie>>();
+            var response = await _httpClient.PutAsJsonAsync(_appSettings.BaseAPIUrl + _appSettings.MovieEndpoint.GetAllMoviesEndpoint + '/' + id, movie);
+            var result = await response.Content.ReadFromJsonAsync<Movie>();
             return result;
         }
 
-        public async Task<ServiceResponse<List<Movie>>> SearchMoviesAsync(string text)
+        public async Task<List<Movie>> SearchMoviesAsync(string text)
         {
 
             try
             {
-                string searchUrl = string.IsNullOrWhiteSpace(text) ? "" : $"/{text}";
-                var response = await _httpClient.GetAsync(_appSettings.MovieEndpoint.SearchMoviesEndpoint + searchUrl);
+                string searchUrl = string.IsNullOrWhiteSpace(text) ? "" : $"name={text}";
+                var response = await _httpClient.GetAsync(_appSettings.BaseAPIUrl + _appSettings.MovieEndpoint.SearchMoviesEndpoint + searchUrl);
                 if (!response.IsSuccessStatusCode)
-                    return new ServiceResponse<List<Movie>>
-                    {
-                        Success = false,
-                        Message = "HTTP request failed"
-                    };
+                    return [];
 
                 var json = await response.Content.ReadAsStringAsync();
-                var result = await response.Content.ReadFromJsonAsync<ServiceResponse<List<Movie>>>();
+                var result = await response.Content.ReadFromJsonAsync<List<Movie>>();
 
                 return result;
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
-
-                return new ServiceResponse<List<Movie>>
-                {
-                    Success = false,
-                    Message = "Network error"
-                };
+                return [];
             }
         }
 
